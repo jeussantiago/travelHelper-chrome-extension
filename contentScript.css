@@ -1,0 +1,17 @@
+.travelHelper-container {
+    border: 5px solid red;
+    position: fixed;
+    right: 0%;
+    top: 20%;
+    color: black;
+    background-color: white;
+
+}
+
+.btn-compare {
+    position: fixed;
+    right: 0%;
+    top: 30%;
+    color: black;
+    background-color: white;
+}

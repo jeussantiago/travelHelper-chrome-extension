@@ -1,0 +1,27 @@
+{
+    "name": "Travel Helper",
+    "version": "0.0.1",
+    "description": "This is a chrome extension which opens different booking sites in order to compare prices.",
+    "manifest_version": 3,
+    "action": {
+        "default_popup": "popup.html"
+    },
+    "background": {
+        "service_worker": "background.js"
+    },
+    "content_scripts": [
+        {
+            "matches": ["*://*.google.com/*", "*://*.youtube.com/*"],
+            "js": ["contentScript.js"],
+            "css": ["contentScript.css"],
+            "run_at": "document_end"
+        }
+    ],
+    "web_accessible_resources": [
+        {
+            "resources": ["modal.html"],
+            "matches": ["<all_urls>"]
+        }
+    ],
+    "permissions": ["activeTab", "scripting", "tabs"]
+}
