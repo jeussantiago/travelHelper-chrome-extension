@@ -21,27 +21,27 @@
 
 // chrome.action.onClicked.addListener((tab) => {
 //     console.log("here");
-//     console.log(tab.id);
+//     console.log(tab.id, tab.url);
 
-//     if (tab.url.includes("google")) {
-//         console.log("google");
+// if (tab.url.includes("google")) {
+//     console.log("google");
 
-//         // googleMessage();
+//     // googleMessage();
 
-//         // chrome.scripting.executeScript({
-//         //     target: { tabId: tab.id },
-//         //     function: reddenPage,
-//         // });
+//     // chrome.scripting.executeScript({
+//     //     target: { tabId: tab.id },
+//     //     function: reddenPage,
+//     // });
 
-//         chrome.runtime.onMessage.addListener(
-//             // this is the message listener
-//             // scrapes the page for the data and sends it to the
-//             /// the content script to open the new tabs
-//             function (request, sender, sendResponse) {
-//                 if (request.message === "messageSent") runThisFunction();
-//             }
-//         );
-//     }
+//     chrome.runtime.onMessage.addListener(
+//         // this is the message listener
+//         // scrapes the page for the data and sends it to the
+//         /// the content script to open the new tabs
+//         function (request, sender, sendResponse) {
+//             if (request.message === "messageSent") runThisFunction();
+//         }
+//     );
+// }
 //     console.log("----");
 // });
 

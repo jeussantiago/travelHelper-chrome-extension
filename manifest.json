@@ -13,9 +13,12 @@
     },
     "content_scripts": [
         {
-            "matches": ["*://*.google.com/*", "*://*.youtube.com/*"],
-            "js": ["contentScript.js"],
-            "css": ["contentScript.css"],
+            "matches": ["*://*.google.com/travel/flights*"],
+            "js": [
+                "contentScript/contentScript.js",
+                "contentScript/googleFlightContentScript.js"
+            ],
+            "css": ["css/contentScript.css"],
             "run_at": "document_end"
         }
     ],
