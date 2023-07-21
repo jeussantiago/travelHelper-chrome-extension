@@ -3,6 +3,8 @@
     "version": "0.0.1",
     "description": "This is a chrome extension which opens different booking sites in order to compare prices.",
     "manifest_version": 3,
+    "permissions": ["activeTab", "scripting", "tabs"],
+    "host_permissions": ["*://*/"],
     "action": {
         "default_popup": "popup.html"
     },
@@ -22,6 +24,5 @@
             "resources": ["modal.html"],
             "matches": ["<all_urls>"]
         }
-    ],
-    "permissions": ["activeTab", "scripting", "tabs"]
+    ]
 }
