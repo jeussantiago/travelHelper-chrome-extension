@@ -1,3 +1,22 @@
+// class FlightData {
+//     constructor() {
+//         this.num_people = 0;
+//         this.adults = 0;
+//         this.children = 0;
+//     }
+
+//     setAdultsNumber(val) {
+//         this.adults = val;
+//     }
+
+//     getAdultsNumber() {
+//         return this.adults;
+//     }
+// }
+
+// const curr_flight_data = new FlightData();
+// curr_flight_data.adults = 1;
+
 var createGoogleFlightsPopout = function () {
     // var couponHTML = "<p>Be the first to submit a coupon for this site</p>";
 
