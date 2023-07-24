@@ -17,6 +17,7 @@
 // const curr_flight_data = new FlightData();
 // curr_flight_data.adults = 1;
 
+
 var createGoogleFlightsPopout = function () {
     // var couponHTML = "<p>Be the first to submit a coupon for this site</p>";
 
@@ -36,6 +37,24 @@ var createGoogleFlightsPopout = function () {
         '<div class="flight-compare-button">Compare</div>';
     googleFlightsPopoutDisplay.style.display = "none";
     document.body.appendChild(googleFlightsPopoutDisplay);
+
+    const compareBtn = document.querySelector(".flight-compare-button");
+    let flightData=[];
+    compareBtn.addEventListener('click', e => {
+        const tripType = document.querySelector("#i6");
+        const passengers = document.querySelector("span[jsname=xAX4ff]");
+        const flightLevel = document.querySelector("#i19");
+        const origin = document.querySelector(".yPKHsc");
+        const destination = document.querySelector(".yPKHsc");
+        const departureDate = document.querySelector("input[aria-label=Departure");
+        const returnDate = document.querySelector("input[aria-label=Return]");
+        flightData.push(tripType.textContent, passengers.textContent, flightLevel.textContent, origin.textContent, destination.textContent, departureDate.value, returnDate.value)
+        return flightData;
+    })
+
+    console.log(flightData)
+    
+
 
     // var couponSubmitOverlay = document.createElement("div");
     // couponSubmitOverlay.className = "_submit-overlay";
@@ -78,6 +97,10 @@ var createGoogleFlightsPopoutEvents = function () {
             // window.open("https://www.wikipedia.org/");
         });
 };
+
+
+
+
 
 //BUG:
 // will have the popup when you first open google flights or when its reload
