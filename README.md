@@ -9,12 +9,14 @@ ii. if one date is provided, Kayak
 issues:
 
 1. breaks because of where it's located. Since the the data gathering is done inside of a click event, it should be seperated from the html - can think of it like seperating html and javascript.
+JD: let's go over this
 
 2. when you get the number of passengers, you don't specify how many of each type of people. (Ex: Adults: 1, Child: 2, etc.)
-
     - Your format: 3 with no specifics
+JD: Fixed
 
 3. origin and destination variables query the same class. Not sure what was intended here
+JD: Fixed. Changed selector to use the aria-labelledby attribute from each fields' input element
 
 4. query doesn't account for multi city
 

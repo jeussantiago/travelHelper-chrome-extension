@@ -80,21 +80,29 @@ var createGoogleFlightsPopoutEvents = function () {
         let flightData = [];
         const tripType = document.querySelector("#i6");
         const passengers = document.querySelector("span[jsname=xAX4ff]");
+        const adults = document.querySelector('div[jsname=mMhAUc]');
+        const children = document.querySelector('div[jsname=LpMIEc]');
+        const infantSeat = document.querySelector('div[jsname=u3Jn2e]');
+        const infantLap = document.querySelector('div[jsname=TwhQhe]');
         const flightLevel = document.querySelector("#i19");
-        const origin = document.querySelector(".yPKHsc");
-        const destination = document.querySelector(".yPKHsc");
-        const departureDate = document.querySelector(
-            "input[aria-label=Departure"
-        );
+        const origin = document.querySelector("input[aria-labelledby=i24]");
+        const destination = document.querySelector("input[aria-labelledby=i30]");
+        const departureDate = document.querySelector("input[aria-label=Departure]");
         const returnDate = document.querySelector("input[aria-label=Return]");
+        const bagCount = document.querySelector("span[jsname=NnAfwf");
         flightData.push(
             tripType.textContent,
             passengers.textContent,
+            adults.getAttribute('aria-valuenow'),
+            children.getAttribute('aria-valuenow'),
+            infantSeat.getAttribute('aria-valuenow'),
+            infantLap.getAttribute('aria-valuenow'),
             flightLevel.textContent,
-            origin.textContent,
-            destination.textContent,
+            origin.value,
+            destination.value,
             departureDate.value,
-            returnDate.value
+            returnDate.value,
+            bagCount.textContent,
         );
         console.log("hello from google flights");
         console.log(flightData);
