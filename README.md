@@ -2,50 +2,55 @@
 
 ## Data Format
 
-> flight_data = {
->
-> > 'cities' : array(str)
-> > 'dates' : array(str : 'year-month-day')
-> > 'seat_type' : str,
-> > 'adult_count' : str(number)
-> > 'child_count' : str(number)
-> > 'stops_count' : str(number) if specified, else null
-> > }
->
-> Example:
->
-> round trip example
-> {
->
-> > 'cities' : ["JFK", "NRT"]
-> > 'dates' : ["2023-09-17", "2023-10-03"]
-> > 'seat_type' : "premium economy",
-> > 'adult_count' : "2"
-> > 'child_count' : "3"
-> > 'stops_count' : "0"
-> > }
->
-> multi way example
-> {
->
-> > 'cities' : ["JFK", "HND", "HND", "KIX", "KIX", "JFK"]
-> > 'dates' : ["2023-09-17", "2023-09-21", "2023-09-25"]
-> > 'seat_type' : "premium economy",
-> > 'adult_count' : "2"
-> > 'child_count' : "0"
-> > 'stops_count' : null
-> > }
+```
+flight_data = {
+    'cities' : array(str)
+    'dates' : array(str : 'year-month-day')
+    'seat_type' : str,
+    'adult_count' : str(number)
+    'child_count' : str(number)
+    'stops_count' : str(number) if specified, else null
+}
+```
 
-> one way example
-> {
->
-> > 'cities' : ["JFK", "HND"]
-> > 'dates' : ['2023-09-17']
-> > 'seat_type' : "premium economy",
-> > 'adult_count' : "5"
-> > 'child_count' : "0"
-> > 'stops_count' : 1
-> > }
+> Round Trip Example
+
+```
+{
+    'cities' : ["JFK", "NRT"]
+    'dates' : ["2023-09-17", "2023-10-03"]
+    'seat_type' : "premium economy",
+    'adult_count' : "2"
+    'child_count' : "3"
+    'stops_count' : "0"
+}
+```
+
+> Multi Way Example
+
+```
+{
+    'cities' : ["JFK", "HND", "HND", "KIX", "KIX", "JFK"]
+    'dates' : ["2023-09-17", "2023-09-21", "2023-09-25"]
+    'seat_type' : "premium economy",
+    'adult_count' : "2"
+    'child_count' : "0"
+    'stops_count' : null
+}
+```
+
+> One Way Example
+
+```
+{
+    'cities' : ["JFK", "HND"]
+    'dates' : ['2023-09-17']
+    'seat_type' : "premium economy",
+    'adult_count' : "5"
+    'child_count' : "0"
+    'stops_count' : 1
+}
+```
 
 ---
 
