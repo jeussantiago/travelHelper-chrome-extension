@@ -58,6 +58,13 @@ flight_data = {
 
 ---
 
+TO DO
+
+-   [ ] scrape data
+-   [ ] format data to fit conditions above
+-   [ ] maybe add one more website
+-   [ ] work on popup UI
+
 7/25
 
 -   added Kayak Url using dummy data

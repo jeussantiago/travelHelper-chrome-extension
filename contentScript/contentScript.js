@@ -37,7 +37,7 @@ var createPopout = function (domain) {
 var createPopoutButton = function () {
     var popoutButton = document.createElement("div");
     popoutButton.className = "_coupon__button";
-    popoutButton.innerHTML = "Test";
+    popoutButton.innerHTML = "Fly";
     document.body.appendChild(popoutButton);
 };
 
@@ -50,7 +50,7 @@ var createPopoutButtonEvents = function () {
                 "block"
             ) {
                 document.querySelector("._coupon__list").style.display = "none";
-                document.querySelector("._coupon__button").innerHTML = "Test";
+                document.querySelector("._coupon__button").innerHTML = "Fly";
             } else {
                 document.querySelector("._coupon__list").style.display =
                     "block";
