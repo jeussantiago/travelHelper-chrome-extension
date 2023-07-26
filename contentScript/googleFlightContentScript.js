@@ -95,14 +95,14 @@ const createGoogleFlightsPopoutEvents = function () {
         const flight = new Map([
             // ["cities", ["JFK", "NRT"]], // value=array(string airport name)
             // ["dates", ["2023-09-17", "2023-10-03"]], // value=array(string date formatted (year-month-day))
-            // ["cities", ["JFK", "HND"]],
-            // ["dates", ["2023-09-17"]],
-            ["cities", ["JFK", "HND", "HND", "KIX", "KIX", "JFK"]],
-            ["dates", ["2023-09-17", "2023-09-21", "2023-09-25"]],
-            ["seat_type", "economu"], // value=string
+            ["cities", ["JFK", "HND"]],
+            ["dates", ["2023-09-17"]],
+            // ["cities", ["JFK", "HND", "HND", "KIX", "KIX", "JFK"]],
+            // ["dates", ["2023-09-17", "2023-09-21", "2023-09-25"]],
+            ["seat_type", "business"], // value=string
             ["adult_count", "2"], // value=string count
             ["child_count", "0"], // value=string count
-            ["stops_count", "0"], // value=string count, null if not specified
+            ["stops_count", null], // value=string count, null if not specified
         ]);
 
         return flight;
@@ -121,12 +121,18 @@ const createGoogleFlightsPopoutEvents = function () {
         // console.log(flight_data);
         const requested_website_urls = [];
 
+        cities = flight_data.get("cities");
+        dates = flight_data.get("dates");
+        cabin_class = flight_data.get("seat_type");
+        adult_count = flight_data.get("adult_count");
+        child_count = flight_data.get("child_count");
+        stops_count = flight_data.get("stops_count");
+
+        // KAYAK
         if (requested_websites.has("kayak")) {
             kayak_url = "www.kayak.com/flights/";
 
             // add cities and dates
-            cities = flight_data.get("cities");
-            dates = flight_data.get("dates");
             if (dates.length == 2) {
                 kayak_url += `${cities[0]}%2Cnearby-${cities[1]}%2Cnearby/${dates[0]}/${dates[1]}/`;
             } else {
@@ -138,7 +144,6 @@ const createGoogleFlightsPopoutEvents = function () {
             }
 
             // add cabin_class
-            cabin_class = flight_data.get("seat_type");
             if (cabin_class.includes("business")) {
                 kayak_url += "business/";
             } else if (cabin_class.includes("premium")) {
@@ -148,8 +153,6 @@ const createGoogleFlightsPopoutEvents = function () {
             }
 
             // add participants
-            adult_count = flight_data.get("adult_count");
-            child_count = flight_data.get("child_count");
             kayak_url += `${adult_count}adults`;
             if (child_count > 0) {
                 kayak_url += "/children";
@@ -162,7 +165,6 @@ const createGoogleFlightsPopoutEvents = function () {
             kayak_url += "?sort=bestflight_a&afsrc=1";
 
             // add number of stops
-            stops_count = flight_data.get("stops_count");
             if (stops_count != null) {
                 kayak_url += `&fs=stops=${stops_count}`;
             }
@@ -171,12 +173,13 @@ const createGoogleFlightsPopoutEvents = function () {
             requested_website_urls.push(kayak_url);
         }
 
+        // EXPEDIA
         if (requested_websites.has("expedia")) {
             expedia_url =
                 "https://www.expedia.com/Flights-Search?flight-type=on&mode=search";
 
             // add trip type
-            dates = flight_data.get("dates");
+            // dates = flight_data.get("dates");
 
             if (dates.length == 2) {
                 expedia_url += "&trip=roundtrip";
@@ -187,7 +190,6 @@ const createGoogleFlightsPopoutEvents = function () {
             }
 
             // add cities and dates
-            cities = flight_data.get("cities");
             // round trip condition
             var date_end = dates.length;
             if (dates.length == 2) {
@@ -208,7 +210,6 @@ const createGoogleFlightsPopoutEvents = function () {
             }
 
             // add cabin_class
-            cabin_class = flight_data.get("seat_type");
             if (cabin_class.includes("business")) {
                 expedia_url += "&options=cabinclass:business";
             } else if (cabin_class.includes("premium")) {
@@ -220,10 +221,8 @@ const createGoogleFlightsPopoutEvents = function () {
             }
 
             // add participants
-            expedia_url += `&passengers=adults:${flight_data.get(
-                "adult_count"
-            )},`;
-            child_count = parseInt(flight_data.get("child_count"));
+            expedia_url += `&passengers=adults:${adult_count},`;
+            child_count = parseInt(child_count);
             if (child_count != 0) {
                 let temp = new Array(child_count);
                 for (let i = 0; i < child_count; ++i) temp[i] = "10";
@@ -238,6 +237,61 @@ const createGoogleFlightsPopoutEvents = function () {
             // not adding number of stops for this website
 
             requested_website_urls.push(expedia_url);
+        }
+
+        // SKYSCANNER
+        if (requested_websites.has("skyscanner")) {
+            // multiway has a slightly different starting url than roundtrip and one way
+            // multiway also has a different destination/date format
+            if (dates.length <= 2) {
+                skyscanner_url =
+                    "https://www.skyscanner.com/transport/flights/";
+
+                // add cities and dates
+                skyscanner_url += `${cities[0]}/${cities[1]}/`;
+                for (var i = 0; i < dates.length; i++) {
+                    formatted_date = dates[i].split("-").join("").substring(2);
+                    skyscanner_url += `${formatted_date}/`;
+                }
+            } else {
+                skyscanner_url = "https://www.skyscanner.com/transport/d/";
+
+                // add cities and dates
+                for (var i = 0; i < dates.length; i++) {
+                    skyscanner_url += `${cities[i * 2]}/${dates[i]}/${
+                        cities[i * 2 + 1]
+                    }/`;
+                }
+            }
+
+            // add adults
+            skyscanner_url += `?adults=${adult_count}&adultsv2=${adult_count}`;
+
+            // add cabin class
+            if (cabin_class.includes("business")) {
+                skyscanner_url += "&cabinclass=business";
+            } else if (cabin_class.includes("premium")) {
+                skyscanner_url += "&cabinclass=premiumeconomy";
+            } else if (cabin_class.includes("first")) {
+                skyscanner_url += "&cabinclass=first";
+            } else {
+                skyscanner_url += "&cabinclass=economy";
+            }
+
+            // add children if any
+            skyscanner_url += `&children=${child_count}&childrenv2=`;
+            child_count = parseInt(child_count);
+            if (child_count > 0) {
+                let temp = new Array(child_count);
+                for (let i = 0; i < child_count; ++i) temp[i] = "10";
+                skyscanner_url += `${temp.join("%7c")}`;
+            }
+
+            skyscanner_url +=
+                "&inboundaltsenabled=false&infants=0&outboundaltsenabled=false&preferdirects=false&ref=home&rtn=0";
+
+            // console.log(skyscanner_url);
+            requested_website_urls.push(skyscanner_url);
         }
 
         // console.log(requested_website_urls);
@@ -305,6 +359,81 @@ const createGoogleFlightsPopoutEvents = function () {
 // 4. data retrieved successfully
 // figure out some way to go to the given websites with filled in info
 /*
+SKYSCANNER
+
+&cabinclass={cabin_class}
+
+cabin_class = [economy, business, first, premiumeconomy]
+
+if children:
+    {10 * child_count} - '%7C' between
+    10%7C10%7C10
+else:
+    - dont enter a field and 
+
+
+&inboundaltsenabled=false
+&outboundaltsenabled=false
+&preferdirects=false
+&qp_prevScreen=HOMEPAGE
+&ref=home&rtn=1
+
+ROUND TRIP
+
+
+https://www.skyscanner.com/transport/flights/
+jfk/nrt/
+230815/230819/ (year[2:],month,day)
+?adultsv2=1
+&cabinclass=economy
+&childrenv2=
+&inboundaltsenabled=false
+&outboundaltsenabled=false
+&preferdirects=false
+&qp_prevScreen=HOMEPAGE
+&ref=home&rtn=1
+
+https://www.skyscanner.com/transport/flights/
+jfk/nrt/
+230822/230826/
+?adultsv2=2
+&cabinclass=business
+&childrenv2=4%7C9%7C14
+&inboundaltsenabled=false
+&outboundaltsenabled=false
+&preferdirects=false
+&qp_prevScreen=HOMEPAGE
+&ref=home&rtn=1
+
+ONE WAY
+
+https://www.skyscanner.com/transport/flights/
+jfk/nrt/
+230822/
+?adultsv2=2
+&cabinclass=first
+&childrenv2=4%7c9%7c14
+&inboundaltsenabled=false
+&infants=0
+&outboundaltsenabled=false
+&preferdirects=false
+&ref=home&rtn=0
+
+MULTIWAY
+
+https://www.skyscanner.com/transport/d/
+jfk/2023-08-22/nrt/ (year-month-day)
+nrt/2023-08-25/kix/
+kix/2023-08-30/jfk/
+?adultsv2=2
+&cabinclass=premiumeconomy
+&childrenv2=10%7c10%7c10
+&infants=0&ref=home
+
+*/
+
+/*
+
 EXPEDIA
 
 https://www.expedia.com/Flights-Search?flight-type=on&mode=search
