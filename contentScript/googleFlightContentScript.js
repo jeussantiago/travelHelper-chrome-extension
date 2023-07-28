@@ -1,26 +1,24 @@
 var createGoogleFlightsPopout = function () {
-    // var couponHTML = "<p>Be the first to submit a coupon for this site</p>";
     var sites = ["Kayak", "Skyscanner", "Expedia"];
 
     var googleFlightsPopoutDisplay = document.createElement("div");
-    googleFlightsPopoutDisplay.className = "_coupon__list";
+    googleFlightsPopoutDisplay.className = "_google_flight__container";
     googleFlightsPopoutDisplay.innerHTML =
-        // '<div class="submit-button">Submit Coupon</div>' +
         "<h1>Travel Helper</h1>" +
-        // "<p>Browse coupons below that have been used for <strong>" +
-        "<p>Compare flights and reveal missing fares from  <strong>" +
+        "<p>Compare flights and reveal missing fares from <strong>" +
         "Google Flights" +
         "</strong></p>";
-    // '<input type="checkbox" name="siteName" id="check1" class="flightCompareCheckbox" value="kayak"> Kayak' +
-    // '<input type="checkbox" name="siteName" id="check1" class="flightCompareCheckbox" value="skyscanner"> Skyscanner' +
-    // '<input type="checkbox" name="siteName" id="check1" class="flightCompareCheckbox" value="orbitz"> Orbitz' +
-    // '<input type="checkbox" name="siteName" id="check1" class="flightCompareCheckbox" value="expedia"> Expedia' +
-    // '<div class="flight-compare-button">Compare</div>';
+
+    // error message section
+    googleFlightsPopoutDisplay.innerHTML +=
+        "<div class='flightErrorSection'></div>";
+
     sitesHTML = "";
     for (var i = 0; i < sites.length; i++) {
         sitesHTML +=
-            `<li><input type="checkbox" name="siteName" id="check${i}" class="flightCompareCheckbox" value="${sites[i].toLowerCase}">` +
-            `<span>${sites[i]}</span></li>`;
+            `<li><input type="checkbox" name="siteName" id="check${i}" class="flightCompareCheckbox" value="${sites[
+                i
+            ].toLowerCase()}" checked>` + `<span>${sites[i]}</span></li>`;
     }
 
     googleFlightsPopoutDisplay.innerHTML +=
@@ -29,66 +27,23 @@ var createGoogleFlightsPopout = function () {
 
     googleFlightsPopoutDisplay.style.display = "none";
     document.body.appendChild(googleFlightsPopoutDisplay);
-
-    // const compareBtn = document.querySelector(".flight-compare-button");
-    // let flightData = [];
-    // compareBtn.addEventListener("click", (e) => {
-    //     const tripType = document.querySelector("#i6");
-    //     const passengers = document.querySelector("span[jsname=xAX4ff]");
-    //     const flightLevel = document.querySelector("#i19");
-    //     const origin = document.querySelector(".yPKHsc");
-    //     const destination = document.querySelector(".yPKHsc");
-    //     const departureDate = document.querySelector(
-    //         "input[aria-label=Departure"
-    //     );
-    //     const returnDate = document.querySelector("input[aria-label=Return]");
-    //     flightData.push(
-    //         tripType.textContent,
-    //         passengers.textContent,
-    //         flightLevel.textContent,
-    //         origin.textContent,
-    //         destination.textContent,
-    //         departureDate.value,
-    //         returnDate.value
-    //     );
-    //     return flightData;
-    // });
-    // cons
-    // console.log(flightData);
-
-    // var couponSubmitOverlay = document.createElement("div");
-    // couponSubmitOverlay.className = "_submit-overlay";
-    // couponSubmitOverlay.innerHTML =
-    //     '<span class="close">(x) close</span>' +
-    //     "<h3>Do you have a coupon for this site?</h3>" +
-    //     '<div><label>Code:</label><input type="text" class="code"/></div>' +
-    //     '<div><label>Description:</label><input type="text" class="desc"/></div>' +
-    //     '<div><button class="submit-coupon">Submit Coupon</button></div>';
-    // couponSubmitOverlay.style.display = "none";
-    // document.body.appendChild(couponSubmitOverlay);
 };
 
 const sleep = (delay) => new Promise((resolve) => setTimeout(resolve, delay));
 
 const createGoogleFlightsPopoutEvents = function () {
+    /**
+     * scrapes the google flights page and gathers the cities/airports(noted by the
+     * closest airport to the city, using the airport's 3 symbols EX: Los Angeles is LAX),
+     * departure dates, the number of adults, the number of children and the cabin class.
+     *
+     * @param {none}
+     * @returns {hashmap} key=[data, error, raw_error]. error is a custom error message.
+     * raw_error is the compiler error message. data is a hashmap containing the data
+     * of the user's flight where key=[cities, dates, seat_type, adult_count, child_count]
+     */
     const getGoogleFlightsData = async function () {
         const sleep_timer = 750;
-
-        // months is zero index
-        const months = {
-            jan: "01",
-            feb: "02",
-            mar: "03",
-            apr: "04",
-            may: "05",
-            Jun: "06",
-            jul: "07",
-            aug: "08",
-            sep: "09",
-            oct: "10",
-            nov: "11",
-            dec: "12",
-        };
 
         // PASSENGER DATA
         var adult_count = null;
@@ -219,7 +174,6 @@ const createGoogleFlightsPopoutEvents = function () {
 
                 for (i; i < dates_end; i++) {
                     const date = dates_scrapped[i].getAttribute("data-iso");
-                    // console.log(date);
                     if (!dates.includes(date)) {
                         dates.push(date);
                     }
@@ -274,23 +228,6 @@ const createGoogleFlightsPopoutEvents = function () {
             ["stops_count", null], // value=string count, null if not specified
         ]);
 
-        // console.log(flight_data);
-
-        // console.log("-----------");
-
-        // const flight_data = new Map([
-        //     // ["cities", ["JFK", "NRT"]], // value=array(string airport name)
-        //     // ["dates", ["2023-09-17", "2023-10-03"]], // value=array(string date formatted (year-month-day))
-        //     ["cities", ["JFK", "HND"]],
-        //     ["dates", ["2023-09-17"]],
-        //     // ["cities", ["JFK", "HND", "HND", "KIX", "KIX", "JFK"]],
-        //     // ["dates", ["2023-09-17", "2023-09-21", "2023-09-25"]],
-        //     ["seat_type", "business"], // value=string
-        //     ["adult_count", "2"], // value=string count
-        //     ["child_count", "0"], // value=string count
-        //     ["stops_count", null], // value=string count, null if not specified
-        // ]);
-
         return {
             data: flight_data,
             error: null,
@@ -308,8 +245,7 @@ const createGoogleFlightsPopoutEvents = function () {
      * @returns {array} full urls of the requested websites containing the flight data
      */
     const createURLs = function (requested_websites, flight_data) {
-        // console.log(flight_data);
-        const requested_website_urls = [];
+        const requested_website_urls = new Map();
 
         cities = flight_data.get("cities");
         dates = flight_data.get("dates");
@@ -320,7 +256,7 @@ const createGoogleFlightsPopoutEvents = function () {
 
         // KAYAK
         if (requested_websites.has("kayak")) {
-            kayak_url = "www.kayak.com/flights/";
+            kayak_url = "https://www.kayak.com/flights/";
 
             // add cities and dates
             if (dates.length == 2) {
@@ -359,8 +295,7 @@ const createGoogleFlightsPopoutEvents = function () {
                 kayak_url += `&fs=stops=${stops_count}`;
             }
 
-            // console.log(kayak_url);
-            requested_website_urls.push(kayak_url);
+            requested_website_urls.set("kayak", kayak_url);
         }
 
         // EXPEDIA
@@ -369,8 +304,6 @@ const createGoogleFlightsPopoutEvents = function () {
                 "https://www.expedia.com/Flights-Search?flight-type=on&mode=search";
 
             // add trip type
-            // dates = flight_data.get("dates");
-
             if (dates.length == 2) {
                 expedia_url += "&trip=roundtrip";
             } else if (dates.length == 1) {
@@ -423,10 +356,8 @@ const createGoogleFlightsPopoutEvents = function () {
                 expedia_url += `children:0,infantinlap:0`;
             }
 
-            // console.log(expedia_url);
             // not adding number of stops for this website
-
-            requested_website_urls.push(expedia_url);
+            requested_website_urls.set("expedia", expedia_url);
         }
 
         // SKYSCANNER
@@ -480,69 +411,91 @@ const createGoogleFlightsPopoutEvents = function () {
             skyscanner_url +=
                 "&inboundaltsenabled=false&infants=0&outboundaltsenabled=false&preferdirects=false&ref=home&rtn=0";
 
-            // console.log(skyscanner_url);
-            requested_website_urls.push(skyscanner_url);
+            requested_website_urls.set("skyscanner", skyscanner_url);
         }
 
-        // console.log(requested_website_urls);
         return requested_website_urls;
     };
 
+    const handleError = function (isError) {
+        const errorContainer = document.querySelector(".flightErrorSection");
+        if (isError) {
+            // add error message to UI
+            errorContainer.innerHTML =
+                "<div class='flightErrorContainer'><p><strong>Error Occured <br />" +
+                "</strong> Try again or reload page</p></div>";
+        } else {
+            // remove error message
+            errorContainer.innerHTML = "";
+        }
+    };
+
     document
-        .querySelector("._coupon__list .flight-compare-button")
+        .querySelector("._google_flight__container .flight-compare-button")
         .addEventListener("click", function (event) {
+            // might be a second search, remove the error message
+            handleError(false);
+
             const inputs = document.querySelectorAll(
-                "._coupon__list .flightCompareCheckbox"
+                "._google_flight__container .flightCompareCheckbox"
             );
 
-            requested_websites = new Map();
+            var requested_websites = new Map();
             for (var i = 0; i < inputs.length; i++) {
                 if (inputs[i].checked) {
                     requested_websites.set(inputs[i].value, true);
                 }
             }
 
-            const flightDataPromise = getGoogleFlightsData();
-            flightDataPromise.then((res) => {
-                if (res.error) {
-                    // error occured, update frontend\
-                    console.log(res.error);
-                    console.log(res.raw_error);
-                    // if airport symbol is empty -> throw error to user
-                    // have an empty position in html, then when airport symbol is empty,
-                    // fill the div with the message "error in retrieving data. try again"
-                    // closing/ clicking X or refreshing page will reset the value of error
-                    // to empty string
-                } else {
-                    // successfully retrived data, create URLs
-                    console.log(res.data);
-                }
-            });
             // check to see if the user selected any websites
             if (requested_websites.size != 0) {
-                // console.log(requested_websites.size, requested_websites);
-                // flight_data = getGoogleFlightsData();
+                // get the user's flight data
+                const flightDataPromise = getGoogleFlightsData();
+                flightDataPromise.then((res) => {
+                    if (res.error) {
+                        // error occured, update frontend
+                        console.log(res.error);
+                        console.log(res.raw_error);
+                        // Add error message
+                        handleError(true);
+                    } else {
+                        // successfully retrived data, create URLs
+                        const requested_website_urls = createURLs(
+                            requested_websites,
+                            res.data
+                        );
 
-                requested_website_urls = createURLs(
-                    requested_websites,
-                    flight_data
-                );
-
-                console.log(requested_website_urls);
+                        // open the urls the user requested
+                        requested_websites.forEach(function (isRequested, key) {
+                            // console.log(key + " = " + isRequested);
+                            if (isRequested) {
+                                window.open(requested_website_urls.get(key));
+                            }
+                        });
+                    }
+                });
             }
+        });
 
-            // console.log(flight_data);
-            // console.log(flight_data.get("adult_count"));
+    // opens the google flights popup
+    document
+        .querySelector("._travel_helper__button")
+        .addEventListener("click", function (event) {
+            if (
+                document.querySelector("._travel_helper__button").innerHTML ==
+                "X"
+            ) {
+                document.querySelector(
+                    "._google_flight__container"
+                ).style.display = "none";
 
-            // const x = document.querySelectorAll("[role]");
-            // const x = document.querySelectorAll(
-            //     "center [role='presentation'] span"
-            // );
-            // for (var i = 0; i < x.length; i++) {
-            //     console.log(x[i].innerHTML);
-            // }
-
-            // window.open("https://www.wikipedia.org/");
+                // remove error message
+                handleError(false);
+            } else {
+                document.querySelector(
+                    "._google_flight__container"
+                ).style.display = "block";
+            }
         });
 };
 

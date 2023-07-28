@@ -1,20 +1,19 @@
 // alert("contentscript.js");
+// import("./contentScript/googleFlightContentScript.js");
+// import(
+//     (chrome.runtime.getURL || chrome.extension.getURL)(
+//         "./contentScript/googleFlightContentScript.js"
+//     )
+// );
 
 var domain = window.location.hostname;
 var fullUrl = window.location.href;
-// domain = domain
-//     .replace("http://", "")
-//     .replace("https://", "")
-//     .replace("www.", "")
-//     .split(/[/?#]/)[0];
+const google_flights_url = "google.com/travel/flights";
 
 chrome.runtime.sendMessage(
     { command: "fetch", data: { domain: domain } },
     (response) => {
-        // parseCoupons(domain);
-        console.log(fullUrl);
-        createPopout(domain);
-        // console.log("response from firebase:", response.date);
+        createPopout(fullUrl);
     }
 );
 
@@ -26,35 +25,37 @@ chrome.runtime.sendMessage(
 
 var createPopout = function (domain) {
     createPopoutButton();
-    // functions from googleFlightContentScript.js
-    // console.log(domain);
-    createGoogleFlightsPopout();
-    createGoogleFlightsPopoutEvents();
+
+    if (domain.includes(google_flights_url)) {
+        createGoogleFlightsPopout();
+        createGoogleFlightsPopoutEvents();
+    }
 
     createPopoutButtonEvents();
 };
 
 var createPopoutButton = function () {
     var popoutButton = document.createElement("div");
-    popoutButton.className = "_coupon__button";
+    popoutButton.className = "_travel_helper__button";
     popoutButton.innerHTML = "Fly";
     document.body.appendChild(popoutButton);
 };
 
 var createPopoutButtonEvents = function () {
     document
-        .querySelector("._coupon__button")
+        .querySelector("._travel_helper__button")
         .addEventListener("click", function (event) {
             if (
-                document.querySelector("._coupon__list").style.display ==
-                "block"
+                document.querySelector("._travel_helper__button").innerHTML ==
+                "X"
             ) {
-                document.querySelector("._coupon__list").style.display = "none";
-                document.querySelector("._coupon__button").innerHTML = "Fly";
+                document.querySelector("._travel_helper__button").innerHTML =
+                    "Fly";
             } else {
-                document.querySelector("._coupon__list").style.display =
-                    "block";
-                document.querySelector("._coupon__button").innerHTML = "X";
+                document.querySelector("._travel_helper__button").innerHTML =
+                    "X";
             }
         });
 };
+
+// createPopout(fullUrl);

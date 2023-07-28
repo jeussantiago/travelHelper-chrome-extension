@@ -55,6 +55,8 @@
 //     // });
 // });
 
+const google_flights_url = "google.com/travel/flights";
+
 chrome.runtime.onMessage.addListener((msg, sender, response) => {
     if (msg.command == "fetch") {
         domain = msg.data.domain;

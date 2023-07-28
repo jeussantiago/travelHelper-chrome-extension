@@ -62,12 +62,12 @@ flight_data = {
 
 -   [x] scrape data
 -   [x] add error handling for scraping data
--   [ ] add error message to front if cant get data
--   [ ] format data to fit conditions above
+-   [x] add error message to front if cant get data
+-   [x] format data to fit conditions above
+-   [ ] remove console error message when an error appears from gathering data
 -   [ ] work on popup UI
 -   [ ] add booking.com
 -   [ ] add momondo
--   [ ] try to fix bug by changing const to var
 
 ### BUGS:
 
@@ -88,14 +88,6 @@ STEPS:
    show the user the error: tell them to try again
 4. data retrieved successfully
    figure out some way to go to the given websites with filled in info
-
-ISSUE 2. <br />
-
-> other than cabin class, can't retrive data from page dynamically. This might be do to the variables being stored in const variables rather than vars, this means that they cant update once filled
-
-Possible Solution:
-
--   update the 'const' variables on flights searching to 'var'
 
 ---
 

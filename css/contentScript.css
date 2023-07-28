@@ -1,5 +1,5 @@
 /*button styling*/
-._coupon__button {
+._travel_helper__button {
     height: 40px;
     width: 50px;
     border-radius: 6px;
@@ -21,7 +21,7 @@
     font-weight: bold;
 }
 
-._coupon__list {
+._google_flight__container {
     height: auto;
     width: 150px;
     border-radius: 6px;
@@ -70,7 +70,7 @@
     text-align: center;
 }
 
-._coupon__list h1 {
+._google_flight__container h1 {
     font-family: serif;
     font-size: 18px;
     margin-bottom: 4px;
@@ -78,7 +78,7 @@
     padding-bottom: 8px;
     /* line-height: 26px; */
 }
-._coupon__list p {
+._google_flight__container p {
     font-family: sans-serif;
     /* line-height: 20px; */
     font-size: 12px;
@@ -87,12 +87,12 @@
     color: #868585;
     margin-top: 4px;
 }
-._coupon__list ul {
+._google_flight__container ul {
     list-style-type: none;
     margin: 15px 0;
     padding: 0;
 }
-._coupon__list ul li {
+._google_flight__container ul li {
     /* border-radius: 3px; */
     /* border: 1px solid #e0e0e0; */
     padding: 2px 9px;
@@ -101,10 +101,10 @@
     /* margin-bottom: 20px; */
 }
 
-._coupon__list li input {
+._google_flight__container li input {
     cursor: pointer;
 }
-._coupon__list li span {
+._google_flight__container li span {
     /* text-align: left; */
     margin-left: 5px;
     /* margin: 10px; */
@@ -114,7 +114,7 @@
     font-weight: bold;
 }
 
-._coupon__list .code {
+._google_flight__container .code {
     background: #ff8d00;
     color: #fff;
     padding: 5px;
@@ -140,4 +140,28 @@
     cursor: pointer;
     /* position: absolute;
     left: 50%; */
+}
+
+.flightErrorContainer {
+    /* border-radius: 6px;
+    box-shadow: 0 3px 15px 0 rgba(0, 0, 0, 0.25);
+    background-color: rgb(220, 53, 69, 0.5);
+    /* border: 1px solid rgb(219, 74, 88); */
+    /* padding: 2px 5px; */
+
+    border: 1px solid rgb(196, 24, 41);
+    border-radius: 3px;
+    margin: 10px auto;
+    padding: 3px 5px;
+    background-color: #ffbaba;
+}
+
+.flightErrorContainer p {
+    font-family: sans-serif;
+    /* line-height: 20px; */
+    font-size: 12px;
+    text-align: left;
+    font-weight: 500;
+    /* color: white; */
+    color: #d8000c;
 }
