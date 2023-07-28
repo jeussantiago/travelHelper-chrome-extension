@@ -123,13 +123,39 @@ const createGoogleFlightsPopoutEvents = function () {
             };
         }
 
+        // TRIP TYPE
+        var trip_type = null;
+        try {
+            trip_type = document
+                .querySelector("div[jsname=oYxtQd] span[id=i6]")
+                .innerHTML.toLowerCase();
+        } catch (err) {
+            return {
+                data: null,
+                error: "Unable to read trip type data.",
+                raw_error: err,
+            };
+        }
+
         // AIRPOT DATA
         var cities = [];
         try {
             // container of row holding two airports
             const airport_contianer = document.querySelectorAll(
-                "[jscontroller=ANrR7b] [jscontroller=V6OXGf] input"
+                "[jscontroller=ANrR7b] [jscontroller=V6OXGf] [jsname=kj0dLd] [jscontroller=i8IY0e] "
             );
+
+            // multi-city trip type means we can skip the first 2 items in the container
+            var i = 0;
+            var airport_end = airport_contianer.length;
+            if (trip_type.includes("multi")) {
+                // in multi-city, there are repeat values in the first 2 positions, skip them
+                var i = 2;
+            } else {
+                // bug from going from multi city to round trip and one way. There would be too many inputs to unpack
+                // the first two items are the only ones we need
+                airport_end = 2;
+            }
 
             // error handling. no data found. not an error since querySelectorAll found nothing
             if (airport_contianer.length == 0) {
@@ -143,23 +169,16 @@ const createGoogleFlightsPopoutEvents = function () {
                 };
             }
 
-            for (let i = 0; i < airport_contianer.length; i++) {
-                if (airport_contianer[i].getAttribute("value")) {
-                    // airport symbol is located in a hidden place unless we open it
-                    airport_contianer[i].click();
-                    // need a timer before getting data to let the data load onto the page
-                    await sleep(sleep_timer);
-                    airport_symbol = document.querySelector(
-                        "[jscontroller=ANrR7b] .P1pPOe"
-                    ).innerHTML;
+            for (i; i < airport_end; i++) {
+                // airport symbol is located in a hidden place unless we open it
+                airport_contianer[i].click();
+                // need a timer before getting data to let the data load onto the page
+                await sleep(sleep_timer);
+                airport_symbol = document.querySelector(
+                    "[jscontroller=ANrR7b] .P1pPOe"
+                ).innerHTML;
 
-                    // if airport symbol is empty -> throw error to user
-                    // have an empty position in html, then when airport symbol is empty,
-                    // fill the div with the message "error in retrieving data. try again"
-                    // closing/ clicking X or refreshing page will reset the value of error
-                    // to empty string
-                    cities.push(airport_symbol);
-                }
+                cities.push(airport_symbol);
             }
         } catch (err) {
             return {
@@ -172,47 +191,57 @@ const createGoogleFlightsPopoutEvents = function () {
         // DATES
         var dates = [];
         try {
-            const dates_scrapped = document.querySelectorAll(
-                "[jsname=huwV5e] input"
-            );
+            var dates_scrapped = null;
+            if (!trip_type.includes("round")) {
+                // one way and multiway
+                dates_scrapped = document.querySelectorAll(
+                    "div.WhDFk.Io4vne.Ic3tg.NXzzqb.g7lVZ.HDland.sYt5sc"
+                );
+                var i = 0;
+                var dates_end = dates_scrapped.length;
+                if (trip_type.includes("one")) {
+                    // the first item is the only ones we need for one way trip
+                    dates_end = 1;
+                }
+                // transitions between items in multi are working fine
 
-            // error handling. no data found. not an error since querySelectorAll found nothing
-            if (dates_scrapped.length == 0) {
-                return {
-                    data: null,
-                    error: "Unable to read departure dates data.",
-                    raw_error: new TypeError(
-                        "Cannot read properties of null (variable dates_scrapped)",
-                        "googleFlightContentScript.js"
-                    ),
-                };
-            }
+                // error handling. no data found. not an error since querySelectorAll found nothing
+                if (dates_scrapped.length == 0) {
+                    return {
+                        data: null,
+                        error: "Unable to read departure dates (One way/ multi-way) data.",
+                        raw_error: new TypeError(
+                            "Cannot read properties of null (variable dates_scrapped)",
+                            "googleFlightContentScript.js"
+                        ),
+                    };
+                }
 
-            for (let i = 0; i < dates_scrapped.length; i++) {
-                if (dates_scrapped[i].getAttribute("value")) {
-                    const date_now = new Date();
-
-                    const date_values = dates_scrapped[i]
-                        .getAttribute("value")
-                        .split(" ");
-                    const month = months[date_values[1].toLowerCase()];
-                    const day = date_values[2];
-                    const year = date_now.getFullYear().toString();
-                    // month is zero index
-                    const date_scrapped = new Date(year, month, day);
-
-                    var date = null;
-                    if (date_scrapped < date_now) {
-                        date = `${parseInt(year) + 1}-${month}-${day}`;
-                    } else {
-                        date = `${year}-${month}-${day}`;
-                    }
-
-                    // some dates are repeating because of same search elements
+                for (i; i < dates_end; i++) {
+                    const date = dates_scrapped[i].getAttribute("data-iso");
+                    // console.log(date);
                     if (!dates.includes(date)) {
                         dates.push(date);
                     }
                 }
+            } else {
+                // round trip
+                const dates_container = document.querySelector(
+                    "[jsname=huwV5e] input"
+                );
+
+                // open calender
+                dates_container.click();
+                await sleep(sleep_timer);
+
+                const flight_one = document
+                    .querySelector("div.WhDFk.Io4vne.g7lVZ.Ic3tg.HDland.NXzzqb")
+                    .getAttribute("data-iso");
+                const flight_two = document
+                    .querySelector("div.WhDFk.Io4vne.Ic3tg.g7lVZ.sYt5sc")
+                    .getAttribute("data-iso");
+
+                dates = [flight_one, flight_two];
             }
         } catch (err) {
             return {
@@ -476,8 +505,14 @@ const createGoogleFlightsPopoutEvents = function () {
             const flightDataPromise = getGoogleFlightsData();
             flightDataPromise.then((res) => {
                 if (res.error) {
-                    // error occured, update frontend
-                    console.log("error occured");
+                    // error occured, update frontend\
+                    console.log(res.error);
+                    console.log(res.raw_error);
+                    // if airport symbol is empty -> throw error to user
+                    // have an empty position in html, then when airport symbol is empty,
+                    // fill the div with the message "error in retrieving data. try again"
+                    // closing/ clicking X or refreshing page will reset the value of error
+                    // to empty string
                 } else {
                     // successfully retrived data, create URLs
                     console.log(res.data);
