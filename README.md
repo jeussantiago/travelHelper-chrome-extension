@@ -58,7 +58,7 @@ flight_data = {
 
 ---
 
-TO DO:
+### TO DO:
 
 -   [x] scrape data
 -   [x] add error handling for scraping data
@@ -69,8 +69,10 @@ TO DO:
 -   [ ] add momondo
 -   [ ] try to fix bug by changing const to var
 
-BUG:
-Issue 1.
+### BUGS:
+
+##### Issue 1.
+
 will have the popup when you first open google flights or when its reload
 if the page already has it and you go to another tab like explore,
 b/c the page doesnt reload, the popup doesn't go away
@@ -91,7 +93,8 @@ STEPS:
 4. data retrieved successfully
    figure out some way to go to the given websites with filled in info
 
-Issue 2.
+##### Issue 2.
+
 other than cabin class, can't retrive data from page dynamically. This might be do to the variables being stored in const variables rather than vars, this means that they cant update once filled
 
 Possible Solution:
