@@ -73,11 +73,7 @@ flight_data = {
 
 ISSUE 1. <br />
 
-will have the popup when you first open google flights or when its reload
-if the page already has it and you go to another tab like explore,
-b/c the page doesnt reload, the popup doesn't go away
-vice versa if you are on google explore where it doesn't show up then you
-enter google flights but the state hasnt changed
+> will have the popup when you first open google flights or when its reload if the page already has it and you go to another tab like explore, b/c the page doesnt reload, the popup doesn't go away vice versa if you are on google explore where it doesn't show up then you enter google flights but the state hasnt changed
 
 POSSIBLE SOLUTION:
 
@@ -95,7 +91,7 @@ STEPS:
 
 ISSUE 2. <br />
 
-other than cabin class, can't retrive data from page dynamically. This might be do to the variables being stored in const variables rather than vars, this means that they cant update once filled
+> other than cabin class, can't retrive data from page dynamically. This might be do to the variables being stored in const variables rather than vars, this means that they cant update once filled
 
 Possible Solution:
 
