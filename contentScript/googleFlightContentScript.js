@@ -68,56 +68,205 @@ var createGoogleFlightsPopout = function () {
     // document.body.appendChild(couponSubmitOverlay);
 };
 
-const createGoogleFlightsPopoutEvents = function () {
-    const getGoogleFlightsData = function () {
-        let flightData = [];
-        const tripType = document.querySelector("#i6");
-        const passengers = document.querySelector("span[jsname=xAX4ff]");
-        const adults = document.querySelector("div[jsname=mMhAUc]");
-        const children = document.querySelector("div[jsname=LpMIEc]");
-        const infantSeat = document.querySelector("div[jsname=u3Jn2e]");
-        const infantLap = document.querySelector("div[jsname=TwhQhe]");
-        const flightLevel = document.querySelector("#i19");
-        const origin = document.querySelector("input[aria-labelledby=i24]");
-        const destination = document.querySelector(
-            "input[aria-labelledby=i30]"
-        );
-        const departureDate = document.querySelector(
-            "input[aria-label=Departure]"
-        );
-        const returnDate = document.querySelector("input[aria-label=Return]");
-        const bagCount = document.querySelector("span[jsname=NnAfwf");
-        flightData.push(
-            tripType.textContent,
-            passengers.textContent,
-            adults.getAttribute("aria-valuenow"),
-            children.getAttribute("aria-valuenow"),
-            infantSeat.getAttribute("aria-valuenow"),
-            infantLap.getAttribute("aria-valuenow"),
-            flightLevel.textContent,
-            origin.value,
-            destination.value,
-            departureDate.value,
-            returnDate.value,
-            bagCount.textContent
-        );
-        // console.log("hello from google flights");
-        // console.log(flightData);
+const sleep = (delay) => new Promise((resolve) => setTimeout(resolve, delay));
 
-        const flight = new Map([
-            // ["cities", ["JFK", "NRT"]], // value=array(string airport name)
-            // ["dates", ["2023-09-17", "2023-10-03"]], // value=array(string date formatted (year-month-day))
-            ["cities", ["JFK", "HND"]],
-            ["dates", ["2023-09-17"]],
-            // ["cities", ["JFK", "HND", "HND", "KIX", "KIX", "JFK"]],
-            // ["dates", ["2023-09-17", "2023-09-21", "2023-09-25"]],
-            ["seat_type", "business"], // value=string
-            ["adult_count", "2"], // value=string count
-            ["child_count", "0"], // value=string count
+const createGoogleFlightsPopoutEvents = function () {
+    const getGoogleFlightsData = async function () {
+        const sleep_timer = 750;
+
+        // months is zero index
+        const months = {
+            jan: "01",
+            feb: "02",
+            mar: "03",
+            apr: "04",
+            may: "05",
+            Jun: "06",
+            jul: "07",
+            aug: "08",
+            sep: "09",
+            oct: "10",
+            nov: "11",
+            dec: "12",
+        };
+
+        // PASSENGER DATA
+        var adult_count = null;
+        var child_count = null;
+        try {
+            // open passenger container to see the number of adults and children
+            document.querySelector("span[jsname=xAX4ff]").click();
+            // wait for data to load
+            await sleep(sleep_timer);
+            const passengers = document.querySelectorAll(
+                "ul[jsname=nK2kYb] li span[jsname=NnAfwf]"
+            );
+
+            if (passengers.length == 0) {
+                return {
+                    data: null,
+                    error: "Unable to read passenger data.",
+                    raw_error: new TypeError(
+                        "Cannot read properties of null (variable passengers)",
+                        "googleFlightContentScript.js"
+                    ),
+                };
+            }
+
+            adult_count = passengers[0].innerHTML;
+            child_count = passengers[1].innerHTML;
+        } catch (err) {
+            return {
+                data: null,
+                error: "Unable to read passenger data.",
+                raw_error: err,
+            };
+        }
+
+        // AIRPOT DATA
+        var cities = [];
+        try {
+            // container of row holding two airports
+            const airport_contianer = document.querySelectorAll(
+                "[jscontroller=ANrR7b] [jscontroller=V6OXGf] input"
+            );
+
+            // error handling. no data found. not an error since querySelectorAll found nothing
+            if (airport_contianer.length == 0) {
+                return {
+                    data: null,
+                    error: "Unable to read cities/airport data.",
+                    raw_error: new TypeError(
+                        "Cannot read properties of null (variable airport_contianer)",
+                        "googleFlightContentScript.js"
+                    ),
+                };
+            }
+
+            for (let i = 0; i < airport_contianer.length; i++) {
+                if (airport_contianer[i].getAttribute("value")) {
+                    // airport symbol is located in a hidden place unless we open it
+                    airport_contianer[i].click();
+                    // need a timer before getting data to let the data load onto the page
+                    await sleep(sleep_timer);
+                    airport_symbol = document.querySelector(
+                        "[jscontroller=ANrR7b] .P1pPOe"
+                    ).innerHTML;
+
+                    // if airport symbol is empty -> throw error to user
+                    // have an empty position in html, then when airport symbol is empty,
+                    // fill the div with the message "error in retrieving data. try again"
+                    // closing/ clicking X or refreshing page will reset the value of error
+                    // to empty string
+                    cities.push(airport_symbol);
+                }
+            }
+        } catch (err) {
+            return {
+                data: null,
+                error: "Unable to read cities/airport data.",
+                raw_error: err,
+            };
+        }
+
+        // DATES
+        var dates = [];
+        try {
+            const dates_scrapped = document.querySelectorAll(
+                "[jsname=huwV5e] input"
+            );
+
+            // error handling. no data found. not an error since querySelectorAll found nothing
+            if (dates_scrapped.length == 0) {
+                return {
+                    data: null,
+                    error: "Unable to read departure dates data.",
+                    raw_error: new TypeError(
+                        "Cannot read properties of null (variable dates_scrapped)",
+                        "googleFlightContentScript.js"
+                    ),
+                };
+            }
+
+            for (let i = 0; i < dates_scrapped.length; i++) {
+                if (dates_scrapped[i].getAttribute("value")) {
+                    const date_now = new Date();
+
+                    const date_values = dates_scrapped[i]
+                        .getAttribute("value")
+                        .split(" ");
+                    const month = months[date_values[1].toLowerCase()];
+                    const day = date_values[2];
+                    const year = date_now.getFullYear().toString();
+                    // month is zero index
+                    const date_scrapped = new Date(year, month, day);
+
+                    var date = null;
+                    if (date_scrapped < date_now) {
+                        date = `${parseInt(year) + 1}-${month}-${day}`;
+                    } else {
+                        date = `${year}-${month}-${day}`;
+                    }
+
+                    // some dates are repeating because of same search elements
+                    if (!dates.includes(date)) {
+                        dates.push(date);
+                    }
+                }
+            }
+        } catch (err) {
+            return {
+                data: null,
+                error: "Unable to read departure dates data.",
+                raw_error: err,
+            };
+        }
+
+        // CABIN CLASS
+        var seat_type = null;
+        try {
+            seat_type = document
+                .querySelector(".Maqf5d .TQYpgc [jsname=oYxtQd] span[id=i18]")
+                .innerHTML.toLowerCase();
+        } catch (err) {
+            return {
+                data: null,
+                error: "Unable to read cabin class data.",
+                raw_error: err,
+            };
+        }
+
+        const flight_data = new Map([
+            ["cities", cities],
+            ["dates", dates],
+            ["seat_type", seat_type], // value=string
+            ["adult_count", adult_count.toString()], // value=string count
+            ["child_count", child_count.toString()], // value=string count
             ["stops_count", null], // value=string count, null if not specified
         ]);
 
-        return flight;
+        // console.log(flight_data);
+
+        // console.log("-----------");
+
+        // const flight_data = new Map([
+        //     // ["cities", ["JFK", "NRT"]], // value=array(string airport name)
+        //     // ["dates", ["2023-09-17", "2023-10-03"]], // value=array(string date formatted (year-month-day))
+        //     ["cities", ["JFK", "HND"]],
+        //     ["dates", ["2023-09-17"]],
+        //     // ["cities", ["JFK", "HND", "HND", "KIX", "KIX", "JFK"]],
+        //     // ["dates", ["2023-09-17", "2023-09-21", "2023-09-25"]],
+        //     ["seat_type", "business"], // value=string
+        //     ["adult_count", "2"], // value=string count
+        //     ["child_count", "0"], // value=string count
+        //     ["stops_count", null], // value=string count, null if not specified
+        // ]);
+
+        return {
+            data: flight_data,
+            error: null,
+            raw_error: null,
+        };
     };
 
     /**
@@ -324,10 +473,20 @@ const createGoogleFlightsPopoutEvents = function () {
                 }
             }
 
+            const flightDataPromise = getGoogleFlightsData();
+            flightDataPromise.then((res) => {
+                if (res.error) {
+                    // error occured, update frontend
+                    console.log("error occured");
+                } else {
+                    // successfully retrived data, create URLs
+                    console.log(res.data);
+                }
+            });
             // check to see if the user selected any websites
             if (requested_websites.size != 0) {
                 // console.log(requested_websites.size, requested_websites);
-                flight_data = getGoogleFlightsData();
+                // flight_data = getGoogleFlightsData();
 
                 requested_website_urls = createURLs(
                     requested_websites,
@@ -352,7 +511,7 @@ const createGoogleFlightsPopoutEvents = function () {
         });
 };
 
-//BUG:
+// BUG:
 // will have the popup when you first open google flights or when its reload
 // if the page already has it and you go to another tab like explore,
 // b/c the page doesnt reload, the popup doesn't go away

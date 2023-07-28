@@ -58,17 +58,49 @@ flight_data = {
 
 ---
 
-TO DO
+TO DO:
 
--   [ ] scrape data
+-   [x] scrape data
+-   [x] add error handling for scraping data
+-   [ ] add error message to front if cant get data
 -   [ ] format data to fit conditions above
--   [ ] maybe add one more website
 -   [ ] work on popup UI
+-   [ ] add booking.com
+-   [ ] add momondo
+-   [ ] try to fix bug by changing const to var
 
-7/25
+BUG:
+Issue 1.
+will have the popup when you first open google flights or when its reload
+if the page already has it and you go to another tab like explore,
+b/c the page doesnt reload, the popup doesn't go away
+vice versa if you are on google explore where it doesn't show up then you
+enter google flights but the state hasnt changed
 
--   added Kayak Url using dummy data
--   added Expedia Url using dummy data
+POSSIBLE SOLUTION:
+
+-   add a chrome tabs onUpdated listener to check the current url
+-   only show the tab if it complies with any of the sites approved
+
+STEPS:
+
+1. see if the user wants to open any other site
+2. if none dont do anything otherwise get data from page
+3. have a error condition where the data can't be retrieve
+   show the user the error: tell them to try again
+4. data retrieved successfully
+   figure out some way to go to the given websites with filled in info
+
+Issue 2.
+other than cabin class, can't retrive data from page dynamically. This might be do to the variables being stored in const variables rather than vars, this means that they cant update once filled
+
+Possible Solution:
+
+-   update the 'const' variables on flights searching to 'var'
+
+---
+
+### John Logs:
 
 7/24 - JD 1. COMPLETE When user clicks 'Compare' pull all data from input fields (googleFlightContentScript line 55) 2. IN PROGRESS Convert data in array into appropriate URL format 1. Kayak
 kayak.com/flights/'origin abbreviation(NYC)'-'destination abbreviation(PAR)'
