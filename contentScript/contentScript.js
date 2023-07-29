@@ -17,6 +17,29 @@ chrome.runtime.sendMessage(
     }
 );
 
+chrome.runtime.onMessage.addListener(function (request, sender, sendResponse) {
+    // listen for messages sent from background.js
+    if (request.message === "hello!") {
+        console.log(request.url); // new url is now in content scripts!
+        if (request.url.includes(google_flights_url)) {
+            console.log("valid site");
+            // createPopout(request.url);
+        } else {
+            console.log("invalid site");
+        }
+    }
+});
+
+// chrome.runtime.onMessage.addListener((msg, sender, response) => {
+//     if (msg.command == "start") {
+//         console.log("contentscript.js, domain:", msg.data.domain);
+//         // createPopout(msg.data.domain);
+//         response({ type: "result", status: "success", data: {}, request: msg });
+//     }
+
+//     return true;
+// });
+
 // chrome.action.onClicked.addListener((tab) => {
 //     console.log(tab.id, tab.url);
 // });

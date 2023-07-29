@@ -64,9 +64,11 @@ flight_data = {
 -   [x] add error handling for scraping data
 -   [x] add error message to front if cant get data
 -   [x] format data to fit conditions above
--   [ ] remove console error message when an error appears from gathering data
--   [ ] add booking.com
+-   [x] remove console error message when an error appears from gathering data
+-   [x] add booking.com
 -   [ ] add momondo
+-   [ ] add png/image for popout
+-   [ ] add listener for url change, when on valid site, add the popup but changing style to visidebl and on invalid site, remove popup by changing to blocked
 
 ### BUGS:
 

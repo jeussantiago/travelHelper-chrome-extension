@@ -527,9 +527,8 @@ const createGoogleFlightsPopoutEvents = function () {
                 flightDataPromise.then((res) => {
                     if (res.error) {
                         // error occured, update frontend
-                        console.log(res.error);
-                        console.log(res.raw_error);
-                        // Add error message
+                        // console.log(res.error);
+                        // console.log(res.raw_error);
                         handleError(true);
                     } else {
                         // successfully retrived data, create URLs
