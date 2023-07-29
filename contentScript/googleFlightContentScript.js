@@ -1,6 +1,4 @@
 var createGoogleFlightsPopout = function () {
-    var sites = ["Kayak", "Skyscanner", "Expedia"];
-
     var googleFlightsPopoutDisplay = document.createElement("div");
     googleFlightsPopoutDisplay.className = "_google_flight__container";
     googleFlightsPopoutDisplay.innerHTML =
@@ -13,13 +11,11 @@ var createGoogleFlightsPopout = function () {
     googleFlightsPopoutDisplay.innerHTML +=
         "<div class='flightErrorSection'></div>";
 
-    sitesHTML = "";
-    for (var i = 0; i < sites.length; i++) {
-        sitesHTML +=
-            `<li><input type="checkbox" name="siteName" id="check${i}" class="flightCompareCheckbox" value="${sites[
-                i
-            ].toLowerCase()}" checked>` + `<span>${sites[i]}</span></li>`;
-    }
+    sitesHTML =
+        `<li><input type="checkbox" name="siteName" id="check0" class="flightCompareCheckbox" value="kayak" checked><span>Kayak</span></li>` +
+        `<li><input type="checkbox" name="siteName" id="check0" class="flightCompareCheckbox" value="expedia" checked><span>Expedia</span></li>` +
+        `<li><input type="checkbox" name="siteName" id="check0" class="flightCompareCheckbox" value="skyscanner" checked><span>Skyscanner</span></li>` +
+        `<li><input type="checkbox" name="siteName" id="check0" class="flightCompareCheckbox" value="booking.com" ><span>Booking.com</span></li>`;
 
     googleFlightsPopoutDisplay.innerHTML +=
         `<ul>${sitesHTML}</ul>` +
@@ -414,6 +410,83 @@ const createGoogleFlightsPopoutEvents = function () {
             requested_website_urls.set("skyscanner", skyscanner_url);
         }
 
+        // BOOKING.COM
+        if (requested_websites.has("booking.com")) {
+            booking_url = "https://flights.booking.com/flights/";
+
+            // add airports
+            const from_airports = [];
+            const to_airports = [];
+            for (let i = 0; i < cities.length; ++i) {
+                if (i % 2 == 0) {
+                    from_airports.push(cities[i] + ".AIRPORT");
+                } else {
+                    to_airports.push(cities[i] + ".AIRPORT");
+                }
+            }
+
+            const from_airports_str = from_airports.join("%7C");
+            const to_airports_str = to_airports.join("%7C");
+            // console.log(from_airports_str);
+            // console.log(to_airports_str);
+            booking_url += `${from_airports_str}-${to_airports_str}/`;
+
+            // add trip type
+            var trip_type = "ROUNDTRIP";
+            if (dates.length == 1) {
+                trip_type = "ONEWAY";
+            } else if (dates.length > 2) {
+                trip_type = "MULTISTOP";
+            }
+            booking_url += `?type=${trip_type}`;
+
+            // add number of adults
+            booking_url += `&adults=${adult_count}`;
+
+            // add seat type/cabin class
+            var cabin_type = "ECONOMY";
+            if (cabin_class.includes("business")) {
+                cabin_type = "BUSINESS";
+            } else if (cabin_class.includes("premium")) {
+                cabin_type = "PREMIUM_ECONOMY";
+            } else if (cabin_class.includes("first")) {
+                cabin_type = "FIRST";
+            }
+            booking_url += `&cabinClass=${cabin_type}`;
+
+            // add children
+            booking_url += "&children=";
+            child_count = parseInt(child_count);
+            if (child_count > 0) {
+                let temp = new Array(child_count);
+                for (let i = 0; i < child_count; ++i) temp[i] = "10";
+                booking_url += `${temp.join("%2C")}`;
+            }
+
+            // add from and to locations
+            booking_url += `&from=${from_airports_str}`;
+            booking_url += `&to=${to_airports_str}`;
+
+            // add dates
+            if (trip_type == "ROUNDTRIP") {
+                booking_url += `&depart=${dates[0]}`;
+                booking_url += `&return=${dates[1]}`;
+            } else if (trip_type == "ONEWAY") {
+                booking_url += `&depart=${dates[0]}`;
+            } else {
+                // Multi stop
+                booking_url += `&multiStopDates=${dates.join("%7C")}`;
+            }
+
+            booking_url +=
+                "&sort=BEST" +
+                "&travelPurpose=leisure" +
+                "&aid=304142" +
+                "&label=gen173nr-1FCAEoggI46AdIM1gEaKQCiAEBmAExuAEXyAEM2AEB6AEB-AECiAIBqAIDuAKTrJWmBsACAdICJGMwMmE2MGE1LTI0YWMtNDUyOS04ZTFhLTcyYTM2MzQyNmM3NdgCBeACAQ";
+
+            requested_website_urls.set("booking.com", booking_url);
+        }
+
         return requested_website_urls;
     };
 
@@ -517,3 +590,102 @@ const createGoogleFlightsPopoutEvents = function () {
 //      show the user the error: tell them to try again
 // 4. data retrieved successfully
 // figure out some way to go to the given websites with filled in info
+
+/*
+BOOKING.COM
+
+cabin_seats = [ECONOMY, BUSINESS, FIRST, PREMIUM_ECONOMY]
+trip_type = [ROUNDTRIP, MULTISTOP, ONEWAY]
+
+airports = (starting airports (seperated by %7C)) - (end_airports (seperated by %7C))
+    - starting airports value pasted also in front of &from=
+    - ending airports for &to=
+
+dates:
+    roundtrip
+        - &depart=
+        - &return=
+    one way
+        - &depart=
+    multi
+        - &multiStopDates=
+
+
+add:
+    &sort=BEST
+    &travelPurpose=leisure&aid=304142
+    &label=gen173nr-1FCAEoggI46AdIM1gEaKQCiAEBmAExuAEXyAEM2AEB6AEB-AECiAIBqAIDuAKTrJWmBsACAdICJGMwMmE2MGE1LTI0YWMtNDUyOS04ZTFhLTcyYTM2MzQyNmM3NdgCBeACAQ
+https://flights.booking.com/flights/JFK.AIRPORT%7CHND.AIRPORT%7CKIX.AIRPORT-HND.AIRPORT%7CKIX.AIRPORT%7CJFK.AIRPORT/?type=MULTISTOP&adults=2&cabinClass=BUSINESS&children=&from=JFK.AIRPORT%7CHND.AIRPORT%7CKIX.AIRPORT
+&to=HND.AIRPORT%7CKIX.AIRPORT%7CJFK.AIRPORT
+&multiStopDates=2023-09-17%7C2023-09-21%7C2023-09-25
+
+https://flights.booking.com/flights/
+JFK.AIRPORT-NRT.AIRPORT/
+?type=ROUNDTRIP
+&adults=2
+&cabinClass=BUSINESS
+&children=
+&from=JFK.AIRPORT
+&to=NRT.AIRPORT
+&depart=2023-09-17
+&return=2023-10-03
+
+https://flights.booking.com/flights/
+JFK.AIRPORT-NRT.AIRPORT/
+?type=ONEWAY
+&adults=2
+&cabinClass=BUSINESS
+&children=
+&from=JFK.AIRPORT
+&to=NRT.AIRPORT
+&depart=2023-09-17
+
+ROUND TRIP
+
+https://flights.booking.com/flights/
+JFK.AIRPORT-MIA.AIRPORT/
+?type=ROUNDTRIP
+&adults=1
+&cabinClass=ECONOMY
+&children=
+&from=JFK.AIRPORT
+&to=MIA.AIRPORT
+&depart=2023-09-02
+&return=2023-09-09
+&sort=BEST
+&travelPurpose=leisure
+&aid=304142
+&label=gen173nr-1FCAEoggI46AdIM1gEaKQCiAEBmAExuAEXyAEM2AEB6AEB-AECiAIBqAIDuAKTrJWmBsACAdICJGMwMmE2MGE1LTI0YWMtNDUyOS04ZTFhLTcyYTM2MzQyNmM3NdgCBeACAQ
+
+MULTI WAY
+
+https://flights.booking.com/flights/
+JFK.AIRPORT%7CMIA.AIRPORT%7CAUS.AIRPORT-MIA.AIRPORT%7CAUS.AIRPORT%7CSAT.AIRPORT/
+?type=MULTISTOP
+&adults=1
+&cabinClass=BUSINESS
+&children=6%2C13%2C4
+&from=JFK.AIRPORT%7CMIA.AIRPORT%7CAUS.AIRPORT
+&to=MIA.AIRPORT%7CAUS.AIRPORT%7CSAT.AIRPORT
+&multiStopDates=2023-09-02%7C2023-09-05%7C2023-09-07
+&sort=BEST
+&travelPurpose=leisure&aid=304142
+&label=gen173nr-1FCAEoggI46AdIM1gEaKQCiAEBmAExuAEXyAEM2AEB6AEB-AECiAIBqAIDuAKTrJWmBsACAdICJGMwMmE2MGE1LTI0YWMtNDUyOS04ZTFhLTcyYTM2MzQyNmM3NdgCBeACAQ
+
+
+ONE WAY
+
+https://flights.booking.com/flights/
+JFK.AIRPORT-MIA.AIRPORT/
+?type=ONEWAY
+&adults=2
+&cabinClass=FIRST
+&children=6%2C13
+&from=JFK.AIRPORT
+&to=MIA.AIRPORT
+&depart=2023-09-02
+&sort=BEST
+&travelPurpose=leisure
+&aid=304142
+&label=gen173nr-1FCAEoggI46AdIM1gEaKQCiAEBmAExuAEXyAEM2AEB6AEB-AECiAIBqAIDuAKTrJWmBsACAdICJGMwMmE2MGE1LTI0YWMtNDUyOS04ZTFhLTcyYTM2MzQyNmM3NdgCBeACAQ
+*/

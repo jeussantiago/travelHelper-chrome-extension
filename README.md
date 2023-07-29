@@ -65,7 +65,6 @@ flight_data = {
 -   [x] add error message to front if cant get data
 -   [x] format data to fit conditions above
 -   [ ] remove console error message when an error appears from gathering data
--   [ ] work on popup UI
 -   [ ] add booking.com
 -   [ ] add momondo
 
