@@ -1,66 +1,39 @@
-// alert("contentscript.js");
-// import("./contentScript/googleFlightContentScript.js");
-// import(
-//     (chrome.runtime.getURL || chrome.extension.getURL)(
-//         "./contentScript/googleFlightContentScript.js"
-//     )
-// );
+let recored_url;
+let isGoogleFlightElementRendered = false;
 
-var domain = window.location.hostname;
-var fullUrl = window.location.href;
-const google_flights_url = "google.com/travel/flights";
-
-chrome.runtime.sendMessage(
-    { command: "fetch", data: { domain: domain } },
-    (response) => {
-        createPopout(fullUrl);
-    }
-);
-
-chrome.runtime.onMessage.addListener(function (request, sender, sendResponse) {
-    // listen for messages sent from background.js
-    if (request.message === "hello!") {
-        console.log(request.url); // new url is now in content scripts!
-        if (request.url.includes(google_flights_url)) {
-            console.log("valid site");
-            // createPopout(request.url);
-        } else {
-            console.log("invalid site");
+chrome.runtime.onMessage.addListener((message, sender, sendResponse) => {
+    if (message.action === "createGoogleFlightsPopout") {
+        if (!isGoogleFlightElementRendered) {
+            createPopout();
+            isGoogleFlightElementRendered = true;
+            // resolves the unchecked runtime.lastError error
+            sendResponse({ message: "Google Flights popout created." });
+            return true;
+        } else if (window.location.href != recored_url) {
+            document.querySelector("._travel_helper__button").style.display =
+                "flex";
+            document.querySelector(
+                "._travel_helper_close__button"
+            ).style.display = "flex";
         }
     }
 });
 
-// chrome.runtime.onMessage.addListener((msg, sender, response) => {
-//     if (msg.command == "start") {
-//         console.log("contentscript.js, domain:", msg.data.domain);
-//         // createPopout(msg.data.domain);
-//         response({ type: "result", status: "success", data: {}, request: msg });
-//     }
-
-//     return true;
-// });
-
-// chrome.action.onClicked.addListener((tab) => {
-//     console.log(tab.id, tab.url);
-// });
-// console.log(domain);
-// createPopout(domain);
-
-var createPopout = function (domain) {
+var createPopout = function () {
     createPopoutButton();
 
-    if (domain.includes(google_flights_url)) {
-        createGoogleFlightsPopout();
-        createGoogleFlightsPopoutEvents();
-    }
+    createGoogleFlightsPopout();
+    createGoogleFlightsPopoutEvents();
 
     createPopoutButtonEvents();
 };
 
 var createPopoutButton = function () {
-    var popoutButton = document.createElement("div");
-    popoutButton.className = "_travel_helper__button";
-    popoutButton.innerHTML = "Fly";
+    const popoutButton = document.createElement("div");
+    popoutButton.className = "_travel_helper__container";
+    popoutButton.innerHTML =
+        "<div class='_travel_helper__button'>Fly</div>" +
+        "<div class='_travel_helper_close__button'>X</div>";
     document.body.appendChild(popoutButton);
 };
 
@@ -74,11 +47,32 @@ var createPopoutButtonEvents = function () {
             ) {
                 document.querySelector("._travel_helper__button").innerHTML =
                     "Fly";
+                document.querySelector("._travel_helper__button").style.right =
+                    "35px";
+                document.querySelector(
+                    "._travel_helper_close__button"
+                ).style.display = "flex";
             } else {
                 document.querySelector("._travel_helper__button").innerHTML =
                     "X";
+                document.querySelector("._travel_helper__button").style.right =
+                    "15px";
+                document.querySelector(
+                    "._travel_helper_close__button"
+                ).style.display = "none";
             }
         });
-};
+    //15 vs
 
-// createPopout(fullUrl);
+    document
+        .querySelector("._travel_helper_close__button")
+        .addEventListener("click", function (event) {
+            document.querySelector("._travel_helper__button").style.display =
+                "none";
+            document.querySelector(
+                "._travel_helper_close__button"
+            ).style.display = "none";
+
+            recored_url = window.location.href;
+        });
+};

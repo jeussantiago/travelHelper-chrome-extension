@@ -68,27 +68,12 @@ flight_data = {
 -   [x] add booking.com
 -   [ ] add momondo
 -   [ ] add png/image for popout
--   [ ] add listener for url change, when on valid site, add the popup but changing style to visidebl and on invalid site, remove popup by changing to blocked
 
 ### BUGS:
 
 ISSUE 1. <br />
 
-> will have the popup when you first open google flights or when its reload if the page already has it and you go to another tab like explore, b/c the page doesnt reload, the popup doesn't go away vice versa if you are on google explore where it doesn't show up then you enter google flights but the state hasnt changed
-
-POSSIBLE SOLUTION:
-
--   add a chrome tabs onUpdated listener to check the current url
--   only show the tab if it complies with any of the sites approved
-
-STEPS:
-
-1. see if the user wants to open any other site
-2. if none dont do anything otherwise get data from page
-3. have a error condition where the data can't be retrieve
-   show the user the error: tell them to try again
-4. data retrieved successfully
-   figure out some way to go to the given websites with filled in info
+> if you start at google flights and then go to a different google tab like google explore, the popup still exists. Found a roundabout solution where I added a close button. Even if its closed in google/explore, if you open google/flights the app will open once again. This creates a different issue where the data isn't being gather properly when the tab is switched back to google flights/
 
 ---
 

@@ -1,79 +1,41 @@
-// function reddenPage() {
-//     document.body.style.backgroundColor = "red";
-// }
+// chrome.runtime.onMessage.addListener((msg, sender, response) => {
+//     if (msg.command == "fetch") {
+//         domain = msg.data.domain;
+//         // console.log("domain:", domain);
+//         response({ type: "result", status: "success", data: {}, request: msg });
+//     }
 
-// -------------------
-
-// function runThisFunction() {
-//     console.log("running the function in background.js");
-// }
-
-// function googleMessage() {
-//     chrome.runtime.onMessage.addListener(
-//         // this is the message listener
-//         // scrapes the page for the data and sends it to the
-//         /// the content script to open the new tabs
-//         function (request, sender, sendResponse) {
-//             if (request.message === "messageSent") runThisFunction();
-//         }
-//     );
-// }
-
-// chrome.action.onClicked.addListener((tab) => {
-//     console.log("here");
-//     console.log(tab.id, tab.url);
-
-// if (tab.url.includes("google")) {
-//     console.log("google");
-
-//     // googleMessage();
-
-//     // chrome.scripting.executeScript({
-//     //     target: { tabId: tab.id },
-//     //     function: reddenPage,
-//     // });
-
-//     chrome.runtime.onMessage.addListener(
-//         // this is the message listener
-//         // scrapes the page for the data and sends it to the
-//         /// the content script to open the new tabs
-//         function (request, sender, sendResponse) {
-//             if (request.message === "messageSent") runThisFunction();
-//         }
-//     );
-// }
-//     console.log("----");
+//     return true;
 // });
 
-// -------------------
+// let tabIdWithPopup = null;
 
-// document.querySelector(".openModal").addEventListener("click", function () {
-//     console.log("here");
-//     // chrome.tabs.query({ currentwindow: true, active: true }, function (tabs) {
-//     //     var activeTab = tabs[0];
-//     //     chrome.tabs.sendMessage(activeTab.id, { command: "openModal" });
-//     // });
+// chrome.tabs.onActivated.addListener(({ tabId }) => {
+//     // Check if the tab with the popup is active
+//     if (tabId === tabIdWithPopup) {
+//         console.log("popup already exists");
+//         // Send a message to the content script to hide the popup
+//         chrome.tabs.sendMessage(tabId, { action: "hideGoogleFlightsPopout" });
+//     }
 // });
 
-const google_flights_url = "google.com/travel/flights";
+chrome.tabs.onUpdated.addListener((tabId, changeInfo, tab) => {
+    // console.log(tab.url);
+    if (
+        changeInfo.status === "complete" &&
+        tab.url.includes("google.com/travel/flights")
+    ) {
+        // check to see if the tab is still present
+        chrome.tabs.get(tabId, (tabInfo) => {
+            if (chrome.runtime.lastError || !tabInfo) {
+                // The tab is not available, so we shouldn't send a message
+                return;
+            }
 
-chrome.runtime.onMessage.addListener((msg, sender, response) => {
-    if (msg.command == "fetch") {
-        domain = msg.data.domain;
-        console.log("domain:", domain);
-        response({ type: "result", status: "success", data: {}, request: msg });
-    }
-
-    return true;
-});
-
-chrome.tabs.onUpdated.addListener(function (tabId, changeInfo, tab) {
-    // read changeInfo data and do something with it
-    // like send the new url to contentscripts.js
-    if (changeInfo.url) {
-        chrome.tabs.sendMessage(tabId, {
-            message: "hello!",
-            url: changeInfo.url,
+            chrome.tabs.sendMessage(tabId, {
+                action: "createGoogleFlightsPopout",
+            });
+            // tabIdWithPopup = tabId;
         });
     }
 });
