@@ -1,0 +1,15 @@
+body {
+    background-color: black;
+}
+.popup__container {
+    width: 100px;
+    height: auto;
+}
+
+p {
+    font-family: sans-serif;
+    font-size: 12px;
+    text-align: center;
+    line-height: 18px;
+    color: white;
+}
