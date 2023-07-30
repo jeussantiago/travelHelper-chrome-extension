@@ -13,7 +13,7 @@ var createGoogleFlightsPopout = function () {
 
     sitesHTML =
         `<li><input type="checkbox" name="siteName" id="check0" class="flightCompareCheckbox" value="kayak" checked><span>Kayak</span></li>` +
-        `<li><input type="checkbox" name="siteName" id="check0" class="flightCompareCheckbox" value="expedia" ><span>Expedia</span></li>` +
+        `<li><input type="checkbox" name="siteName" id="check0" class="flightCompareCheckbox" value="expedia" checked><span>Expedia</span></li>` +
         `<li><input type="checkbox" name="siteName" id="check0" class="flightCompareCheckbox" value="skyscanner" checked><span>Skyscanner</span></li>` +
         `<li><input type="checkbox" name="siteName" id="check0" class="flightCompareCheckbox" value="booking.com" ><span>Booking.com</span></li>`;
 
