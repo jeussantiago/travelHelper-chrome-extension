@@ -67,7 +67,7 @@ flight_data = {
 -   [x] remove console error message when an error appears from gathering data
 -   [x] add booking.com
 -   [ ] add momondo
--   [ ] add png/image for popout
+-   [x] add png/image for popout
 
 ### BUGS:
 

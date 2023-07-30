@@ -1,5 +1,6 @@
 let recored_url;
 let isGoogleFlightElementRendered = false;
+const iconUrl = chrome.runtime.getURL("images/icon48.png");
 
 chrome.runtime.onMessage.addListener((message, sender, sendResponse) => {
     if (message.action === "createGoogleFlightsPopout") {
@@ -32,9 +33,12 @@ var createPopoutButton = function () {
     const popoutButton = document.createElement("div");
     popoutButton.className = "_travel_helper__container";
     popoutButton.innerHTML =
-        "<div class='_travel_helper__button'>Fly</div>" +
+        "<div class='_travel_helper__button'><img src='' id='travel_helper_icon' alt='icon'></div>" +
         "<div class='_travel_helper_close__button'>X</div>";
+
     document.body.appendChild(popoutButton);
+
+    document.querySelector("#travel_helper_icon").src = iconUrl;
 };
 
 var createPopoutButtonEvents = function () {
@@ -45,14 +49,17 @@ var createPopoutButtonEvents = function () {
                 document.querySelector("._travel_helper__button").innerHTML ==
                 "X"
             ) {
+                // add app icon back
                 document.querySelector("._travel_helper__button").innerHTML =
-                    "Fly";
+                    "<img src='' id='travel_helper_icon' alt='icon'>";
+                document.querySelector("#travel_helper_icon").src = iconUrl;
                 document.querySelector("._travel_helper__button").style.right =
                     "35px";
                 document.querySelector(
                     "._travel_helper_close__button"
                 ).style.display = "flex";
             } else {
+                // turn app icon into X symbol to show close button
                 document.querySelector("._travel_helper__button").innerHTML =
                     "X";
                 document.querySelector("._travel_helper__button").style.right =
