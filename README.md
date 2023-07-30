@@ -73,7 +73,8 @@ flight_data = {
 
 ISSUE 1. <br />
 
-> if you start at google flights and then go to a different google tab like google explore, the popup still exists. Found a roundabout solution where I added a close button. Even if its closed in google/explore, if you open google/flights the app will open once again. This creates a different issue where the data isn't being gather properly when the tab is switched back to google flights/
+> if you start at google flights and then go to a different google tab like google explore, the popup still exists. Found a roundabout solution where I added a close button. Even if its closed in google/explore, if you open google/flights the app will open once again. This creates a different issue where the data isn't being gathered properly when the tab is switched back to google flights/. Possible data gathering issues include not being to able scrap and the data gathered is persistent from the previous time in google flights.
+> Works as expected if enter google flights first and stays on the same page.
 
 ---
 
