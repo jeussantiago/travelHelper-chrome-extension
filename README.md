@@ -2,7 +2,7 @@
 
 Google Flights is easy to use and convenient since users can easily search for flights rather than entering a different domain then once again search for flights. It eliminates that annoying one step. However, Google Flights often fails in providing the best price. Many of times, it failed to find connecting flights which would make last minute trips cheaper. Similarly, it would find the exact same flight as other sites, but label them at a higher price, somewhere around 5% to 15%.
 
-Trvel Helper looks to take advantage of the easiness of Google Flights and the ability of the more powerful sites such as skyscanner in order to provide users with the lowest price possible for their next destination.
+Trvel Helper looks to take advantage of the easiness of Google Flights and the ability of the more powerful sites such as skyscanner and kayak in order to provide users with the lowest price possible for their next destination.
 
 ## Data Format
 
