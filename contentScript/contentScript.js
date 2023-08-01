@@ -54,7 +54,7 @@ var createPopoutButtonEvents = function () {
                     "<img src='' id='travel_helper_icon' alt='icon'>";
                 document.querySelector("#travel_helper_icon").src = iconUrl;
                 document.querySelector("._travel_helper__button").style.right =
-                    "35px";
+                    "40px";
                 document.querySelector(
                     "._travel_helper_close__button"
                 ).style.display = "flex";

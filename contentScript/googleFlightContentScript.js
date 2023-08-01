@@ -284,7 +284,7 @@ const createGoogleFlightsPopoutEvents = function () {
             }
 
             // add sorting and page number
-            kayak_url += "?sort=bestflight_a&afsrc=1";
+            kayak_url += "?sort=price_a&afsrc=1";
 
             // add number of stops
             if (stops_count != null) {
@@ -479,7 +479,7 @@ const createGoogleFlightsPopoutEvents = function () {
             }
 
             booking_url +=
-                "&sort=BEST" +
+                "&sort=CHEAPEST" +
                 "&travelPurpose=leisure" +
                 "&aid=304142" +
                 "&label=gen173nr-1FCAEoggI46AdIM1gEaKQCiAEBmAExuAEXyAEM2AEB6AEB-AECiAIBqAIDuAKTrJWmBsACAdICJGMwMmE2MGE1LTI0YWMtNDUyOS04ZTFhLTcyYTM2MzQyNmM3NdgCBeACAQ";

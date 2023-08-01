@@ -11,7 +11,7 @@
     font-family: serif;
     color: #383636;
     top: 75px;
-    right: 35px;
+    right: 40px;
     text-align: center;
     z-index: 9999999999;
     display: flex;
@@ -19,6 +19,7 @@
     align-items: center;
     font-size: 17px;
     font-weight: bold;
+    z-index: 2;
 }
 
 ._travel_helper__button img {
@@ -30,7 +31,7 @@
 
 ._travel_helper_close__button {
     height: 40px;
-    width: 25px;
+    width: 30px;
     border-top-right-radius: 6px;
     border-bottom-right-radius: 6px;
     border-right: 1px solid rgb(228, 228, 228);
@@ -52,6 +53,7 @@
     align-items: center;
     font-size: 17px;
     font-weight: bold;
+    z-index: 1;
 }
 
 ._google_flight__container {
@@ -70,6 +72,7 @@
     overflow: hidden;
     overflow-y: auto;
     cursor: default;
+    z-index: 2;
 }
 
 ._submit-overlay {
