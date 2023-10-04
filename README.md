@@ -2,11 +2,13 @@
 
 Google Flights is easy to use and convenient since users can easily search for flights rather than entering a different domain then once again search for flights. It eliminates that annoying one step. However, Google Flights often fails in providing the best price. Many of times, it failed to find connecting flights which would make last minute trips cheaper. Similarly, it would find the exact same flight as other sites, but label them at a higher price, somewhere around 5% to 15%.
 
-Trvel Helper looks to take advantage of the easiness of Google Flights and the ability of the more powerful sites such as skyscanner and kayak in order to provide users with the lowest price possible for their next destination.
+Travel Helper looks to take advantage of the easiness of Google Flights and the ability of the more powerful sites such as skyscanner and kayak in order to provide users with the lowest price possible for their next destination.
 
 To use the extension, all you simply need to do is search for your destination, go into google flights, filter your number of passengers, dates, and cabin class, and finally select which sites you want to compare from our popup.
 
 This extension does not save any user data. It simply gathers your inputted information on google flights and opens your preferred sites for comparison.
+
+Chrome Extension Link: https://chrome.google.com/webstore/detail/travel-helper/jcalegmiaejdpbffdkcdpenimoboenap
 
 Safe travels everyone.
 
