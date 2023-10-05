@@ -4,7 +4,7 @@ Google Flights is easy to use and convenient since users can easily search for f
 
 Travel Helper looks to take advantage of the easiness of Google Flights and the ability of the more powerful sites such as skyscanner and kayak in order to provide users with the lowest price possible for their next destination.
 
-To use the extension, all you simply need to do is search for your destination, go into google flights, filter your number of passengers, dates, and cabin class, and finally select which sites you want to compare from our popup.
+To use the extension, all you simply need to do is search for your destination on a new tab using the search bar. Google flights will be one of the first options. Go into google flights. Then filter your number of passengers, dates, and cabin class, and finally select which sites you want to compare from our popup.
 
 This extension does not save any user data. It simply gathers your inputted information on google flights and opens your preferred sites for comparison.
 
